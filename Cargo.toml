@@ -2,7 +2,7 @@
 name = "skeg-cli"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.86"
+rust-version = "1.88"
 license = "Apache-2.0"
 repository = "https://github.com/skegdb/skeg-cli"
 homepage = "https://github.com/skegdb/skeg-cli"
@@ -24,3 +24,7 @@ skeg-vector = "0.1.0"
 
 [dev-dependencies]
 tempfile = "3"
+
+[lints.clippy]
+uninlined_format_args = "allow"
+manual_is_multiple_of = "allow"
