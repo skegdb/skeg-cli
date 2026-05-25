@@ -1,0 +1,26 @@
+[package]
+name = "skeg-cli"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.86"
+license = "Apache-2.0"
+repository = "https://github.com/skegdb/skeg-cli"
+homepage = "https://github.com/skegdb/skeg-cli"
+authors = ["skeg contributors"]
+description = "Command-line tool for skeg (index build, inspect, repair)"
+keywords = ["vector-database", "skeg", "cli"]
+categories = ["command-line-utilities"]
+
+[lib]
+name = "skeg_cli"
+path = "src/lib.rs"
+
+[[bin]]
+name = "skeg-cli"
+path = "src/main.rs"
+
+[dependencies]
+skeg-vector = "0.1.0"
+
+[dev-dependencies]
+tempfile = "3"

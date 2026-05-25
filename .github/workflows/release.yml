@@ -1,0 +1,56 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  publish-crate:
+    uses: skegdb/.github/.github/workflows/release-cargo.yml@main
+    secrets:
+      CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+  build-binaries:
+    strategy:
+      fail-fast: false
+      matrix:
+        # aarch64 only. skeg-cli links skeg-vector which carries the
+        # NEON SIMD kernels; x86_64 would compile via scalar fallback.
+        include:
+          - target: aarch64-apple-darwin
+            runner: macos-latest
+          - target: aarch64-unknown-linux-gnu
+            runner: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v2
+      - run: |
+          if [ "${{ matrix.target }}" = "aarch64-unknown-linux-gnu" ]; then
+            sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu
+            export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
+          fi
+          cargo build --release --target ${{ matrix.target }} --bin skeg-cli --locked
+      - run: |
+          cd target/${{ matrix.target }}/release
+          tar -czf skeg-cli-${{ github.ref_name }}-${{ matrix.target }}.tar.gz skeg-cli
+          shasum -a 256 skeg-cli-*.tar.gz > skeg-cli-*.tar.gz.sha256
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            target/${{ matrix.target }}/release/skeg-cli-*.tar.gz
+            target/${{ matrix.target }}/release/skeg-cli-*.tar.gz.sha256
+
+  bump-homebrew:
+    needs: build-binaries
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dawidd6/action-homebrew-bump-formula@v3
+        with:
+          token: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
+          tap: skegdb/tap
+          formula: skeg-cli
+          tag: ${{ github.ref }}
+          revision: ${{ github.sha }}
