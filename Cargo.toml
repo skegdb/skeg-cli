@@ -20,7 +20,9 @@ name = "skeg-cli"
 path = "src/main.rs"
 
 [dependencies]
-skeg-vector = "0.1.0"
+skeg-vector = "0.1.1"
+skeg-resp3 = "0.1.1"
+bytes = "1"
 
 [dev-dependencies]
 tempfile = "3"

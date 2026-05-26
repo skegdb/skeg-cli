@@ -1,20 +1,27 @@
 #![deny(unsafe_code)]
 
-//! `skeg-cli` - offline index builder for skeg.
+//! `skeg-cli` - operator tools for skeg.
 //!
-//! The `build` command reads a vector dataset (`.npy` or `.fbin`), constructs
-//! a Vamana graph once, and writes a ready-to-serve skeg data directory. A
-//! server started with `--mode serve` against that directory serves VSEARCH
-//! at the clean resident footprint - the streaming-insert path's
-//! consolidation churn is never paid (see PLAN-POST-Q10 Step 1.5).
+//! Three subcommands ship in v0.1:
 //!
-//! The output layout mirrors a single-shard data directory:
+//! - `build`   - offline Vamana index builder. Reads a vector dataset
+//!   (`.npy` or `.fbin`) and writes a ready-to-serve skeg data directory.
+//!   See [`build_index`].
+//! - `inspect` - offline introspection of a data directory: VINDEX names,
+//!   dims, vector counts, file sizes per shard. See [`inspect`].
+//! - `stats`   - RESP3 client that fetches `SKEG.STATS`, `SKEG.SHARDS`,
+//!   and `SKEG.VINDEX.LIST` from a running server. See [`stats`].
+//!
+//! The build output layout mirrors a single-shard data directory:
 //!
 //! ```text
 //! <output>/shard-0/vindexes.registry
 //! <output>/shard-0/vindex-<name>/graph.vmn
 //! <output>/shard-0/vindex-<name>/vectors.bin
 //! ```
+
+pub mod inspect;
+pub mod stats;
 
 use std::io;
 use std::path::Path;

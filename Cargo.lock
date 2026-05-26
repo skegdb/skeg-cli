@@ -500,13 +500,17 @@ dependencies = [
 name = "skeg-cli"
 version = "0.1.0"
 dependencies = [
+ "bytes",
+ "skeg-resp3",
  "skeg-vector",
  "tempfile",
 ]
 
 [[package]]
 name = "skeg-platform"
-version = "0.1.0"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "52b887d4bd0c51698464170319bc10cfec47c118b7156ac0a56a55f66de76576"
 dependencies = [
  "libc",
  "memmap2",
@@ -516,15 +520,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "skeg-resp3"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "98982ea32670241ac68a6b8f5ec1430c0ef0fab0247c23c577915ba6a07f9d5f"
+dependencies = [
+ "bytes",
+ "thiserror",
+]
+
+[[package]]
 name = "skeg-simd"
-version = "0.1.0"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f29e328aa53362c5d82de8e6cf69a08907022da8949b1ca092340d834fd46f6d"
 dependencies = [
  "thiserror",
 ]
 
 [[package]]
 name = "skeg-vector"
-version = "0.1.0"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0263cd552520a618988e8a55f648a683ada732ce033bc02bf32867a0d9c34c79"
 dependencies = [
  "ahash",
  "bytemuck",
