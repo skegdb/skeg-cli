@@ -284,7 +284,7 @@ mod tests {
         let dir = TempDir::new().unwrap();
         let shard = dir.path().join("shard-0");
         fs::create_dir_all(&shard).unwrap();
-        // count=1, name="docs", dim=8 -- mirrors what build_index writes.
+        // count=1, name="docs", dim=8; mirrors what build_index writes.
         let mut buf = Vec::new();
         buf.extend_from_slice(&1u32.to_le_bytes());
         buf.extend_from_slice(&4u16.to_le_bytes());

@@ -7,32 +7,33 @@ counters).
 
 ```sh
 cargo install skeg-cli
+brew tap skegdb/tap && brew install skeg-cli
 ```
 
-Pre-built aarch64 tarballs (Apple Silicon, Linux ARM) will be attached
-to GitHub Releases starting with v0.1.0.
+Pre-built aarch64 tarballs (Apple Silicon, Linux ARM) are attached to
+every GitHub Release.
 
 ## Commands
 
-### `build` — offline Vamana index
+### `build`: offline Vamana index
 
-Reads a vector dataset, constructs a Vamana graph once, and writes a
-ready-to-serve skeg data directory. Use this when you have a static
-corpus (RAG dump, embedding snapshot, scientific dataset) and want to
-hand the server a pre-built index instead of paying the
-streaming-insert path's consolidation cost.
+Reads a vector dataset, constructs a Vamana graph, and writes a
+ready-to-serve skeg data directory. For a static corpus (RAG dump,
+embedding snapshot, scientific dataset) building offline gives the
+server a clean index instead of paying the streaming-insert path's
+consolidation cost.
 
 ```sh
 skeg-cli build --input vectors.npy --output ./data --name docs --r 64 --l 100
 ```
 
-| Flag | Meaning | Default |
-|---|---|---|
-| `--input <FILE>` | Dataset: `.npy` (NumPy v1.0 little-endian f32, C order) or `.fbin` (`[u32 n][u32 dim][f32 data]`) | required |
-| `--output <DIR>` | Output data directory (created if missing) | required |
-| `--name <NAME>` | VINDEX name the server will register | `default` |
-| `--r <R>` | Max graph out-degree | `64` |
-| `--l <L>` | Query-time search-list size | `100` |
+| Flag             | Meaning                                                                                              | Default   |
+| ---------------- | ---------------------------------------------------------------------------------------------------- | --------- |
+| `--input <FILE>` | Dataset: `.npy` (NumPy v1.0 little-endian f32, C order) or `.fbin` (`[u32 n][u32 dim][f32 data]`)    | required  |
+| `--output <DIR>` | Output data directory (created if missing)                                                           | required  |
+| `--name <NAME>`  | VINDEX name the server will register                                                                 | `default` |
+| `--r <R>`        | Max graph out-degree                                                                                 | `64`      |
+| `--l <L>`        | Query-time search-list size                                                                          | `100`     |
 
 Then serve it:
 
@@ -46,7 +47,7 @@ The input file is memory-mapped: vectors are read from the mapping
 rather than copied into the heap, so a dataset close to or larger than
 RAM can still be indexed.
 
-### `inspect` — what's in a data directory
+### `inspect`: what's in a data directory
 
 Walks a data directory, enumerates every `shard-<N>/` subdirectory,
 lists the VINDEXes registered in each, and prints their dim, vector
@@ -69,12 +70,11 @@ fails (interrupted build, corrupted graph, partial write). `kv_bytes`
 sums every regular file directly under `shard-<N>/` that is not a
 `vindex-*` subdirectory: the vLog segments and the index snapshot.
 
-### `stats` — live server counters
+### `stats`: live server counters
 
-RESP3 client. Connects to a running `skeg-resp3` server, runs
-`HELLO 3`, `SKEG.STATS`, `SKEG.SHARDS`, and `SKEG.VINDEX.LIST`, and
-prints the aggregated result. Read-only; the TCP connection is closed
-before exit.
+Connects to a running `skeg-resp3` server, runs `HELLO 3`,
+`SKEG.STATS`, `SKEG.SHARDS`, and `SKEG.VINDEX.LIST`, and prints the
+combined result. Read-only; the TCP connection is closed before exit.
 
 ```sh
 $ skeg-cli stats 127.0.0.1:6379
@@ -94,10 +94,10 @@ For a live dashboard over the same data points, use
 
 ## Global flags
 
-| Flag | Meaning |
-|---|---|
-| `-h`, `--help` | Print help (top-level or for a specific subcommand) |
-| `-V`, `--version` | Print the version |
+| Flag              | Meaning                                              |
+| ----------------- | ---------------------------------------------------- |
+| `-h`, `--help`    | Print help (top-level or for a specific subcommand)  |
+| `-V`, `--version` | Print the version                                    |
 
 ## Library use
 

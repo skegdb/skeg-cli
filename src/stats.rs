@@ -154,9 +154,9 @@ fn read_one_frame(sock: &mut TcpStream) -> io::Result<Frame> {
     }
 }
 
-/// Best-effort conversion of a frame into a string, mirroring how
-/// `redis-cli` prints scalars. Anything not naturally a string yields
-/// an empty string -- the caller decides whether that is an error.
+/// Convert a frame into a string, mirroring how `redis-cli` prints
+/// scalars. Frames that are not naturally a string yield an empty
+/// string; the caller decides whether that is an error.
 fn frame_as_string(f: &Frame) -> String {
     match f {
         Frame::Simple(s) => s.clone(),
