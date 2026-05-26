@@ -7,7 +7,7 @@ license = "Apache-2.0"
 repository = "https://github.com/skegdb/skeg-cli"
 homepage = "https://github.com/skegdb/skeg-cli"
 authors = ["skeg contributors"]
-description = "Command-line tool for skeg (index build, inspect, repair)"
+description = "Command-line tool for skeg (offline index build, data-dir inspect, server stats)"
 keywords = ["vector-database", "skeg", "cli"]
 categories = ["command-line-utilities"]
 

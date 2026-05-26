@@ -89,8 +89,8 @@ vindexes   1
   docs (dim=4)
 ```
 
-For a live dashboard over the same data points, use
-[`skeg-top`](https://github.com/skegdb/skeg-tui).
+A live dashboard over the same data points (`skeg-top`) will ship in
+a separate package alongside future releases.
 
 ## Global flags
 
