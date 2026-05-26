@@ -3,6 +3,10 @@ on:
   push:
     tags: ['v*']
 
+# Required by softprops/action-gh-release to create the GitHub Release.
+permissions:
+  contents: write
+
 jobs:
   publish-crate:
     uses: skegdb/.github/.github/workflows/release-cargo.yml@main
@@ -35,22 +39,17 @@ jobs:
           cargo build --release --target ${{ matrix.target }} --bin skeg-cli --locked
       - run: |
           cd target/${{ matrix.target }}/release
-          tar -czf skeg-cli-${{ github.ref_name }}-${{ matrix.target }}.tar.gz skeg-cli
-          shasum -a 256 skeg-cli-*.tar.gz > skeg-cli-*.tar.gz.sha256
+          NAME="skeg-cli-${{ github.ref_name }}-${{ matrix.target }}"
+          tar -czf "${NAME}.tar.gz" skeg-cli
+          shasum -a 256 "${NAME}.tar.gz" > "${NAME}.tar.gz.sha256"
       - uses: softprops/action-gh-release@v2
         with:
           files: |
             target/${{ matrix.target }}/release/skeg-cli-*.tar.gz
             target/${{ matrix.target }}/release/skeg-cli-*.tar.gz.sha256
 
-  bump-homebrew:
-    needs: build-binaries
-    runs-on: ubuntu-latest
-    steps:
-      - uses: dawidd6/action-homebrew-bump-formula@v3
-        with:
-          token: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
-          tap: skegdb/tap
-          formula: skeg-cli
-          tag: ${{ github.ref }}
-          revision: ${{ github.sha }}
+  # bump-homebrew is intentionally disabled for v0.1.0. The
+  # Formula/skeg-cli.rb stub was removed from skegdb/homebrew-tap
+  # (placeholder sha256 was blocking brew audit); the formula will be
+  # hand-crafted from the first GitHub Release and re-enabled with the
+  # mislav action in a follow-up.
